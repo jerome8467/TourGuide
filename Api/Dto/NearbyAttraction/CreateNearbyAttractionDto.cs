@@ -15,7 +15,7 @@ namespace TourGuide.Dto.NearbyAttraction
             _rewardCentral = rewardCentral;
         }
 
-        public NearbyAttractionDto Generate(Attraction attraction, VisitedLocation lastVisitedLocation)
+        public async Task<NearbyAttractionDto> Generate(Attraction attraction, VisitedLocation lastVisitedLocation)
         {
             return new NearbyAttractionDto
             {
@@ -26,7 +26,7 @@ namespace TourGuide.Dto.NearbyAttraction
                 LatitudeUser = lastVisitedLocation.Location.Latitude,
                 LongitudeUser = lastVisitedLocation.Location.Longitude,
                 MilesDistance = _rewardsService.GetDistance(attraction, lastVisitedLocation.Location),
-                RewardsPoints = _rewardCentral.GetAttractionRewardPoints(attraction.AttractionId, lastVisitedLocation.UserId)
+                RewardsPoints = await _rewardCentral.GetAttractionRewardPoints(attraction.AttractionId, lastVisitedLocation.UserId)
             };
         }
 

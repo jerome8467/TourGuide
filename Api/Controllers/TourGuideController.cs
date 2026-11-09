@@ -21,21 +21,21 @@ public class TourGuideController : ControllerBase
     }
 
     [HttpGet("getLocation")]
-    public ActionResult<VisitedLocation> GetLocation([FromQuery] string userName)
+    public async Task<ActionResult<VisitedLocation>> GetLocation([FromQuery] string userName)
     {
-        var location = _tourGuideService.GetUserLocation(GetUser(userName));
+        var location = await _tourGuideService.GetUserLocation(GetUser(userName));
         return Ok(location);
     }
 
     [HttpGet("getNearbyAttractions")]
-    public ActionResult<List<NearbyAttractionDto>> GetNearbyAttractions([FromQuery] string userName)
+    public async Task<ActionResult<List<NearbyAttractionDto>>> GetNearbyAttractions([FromQuery] string userName)
     {
-        var visitedLocation = _tourGuideService.GetUserLocation(GetUser(userName));
-        var attractions = _tourGuideService.GetNearByAttractions(visitedLocation);
+        var visitedLocation = await _tourGuideService.GetUserLocation(GetUser(userName));
+        var attractions = await _tourGuideService.GetNearByAttractions(visitedLocation);
         List<NearbyAttractionDto> nearbyAttractionDtos = new List<NearbyAttractionDto>();
         foreach (var attraction in attractions)
         {
-            nearbyAttractionDtos.Add(_createNearbyAttractionDto.Generate(attraction, visitedLocation));
+            nearbyAttractionDtos.Add(await _createNearbyAttractionDto.Generate(attraction, visitedLocation));
         }
         return Ok(nearbyAttractionDtos);
     }

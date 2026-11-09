@@ -49,9 +49,9 @@ public class TourGuideService : ITourGuideService
         return user.GetAllUserRewards();
     }
 
-    public VisitedLocation GetUserLocation(User user)
+    public async Task<VisitedLocation> GetUserLocation(User user)
     {
-        return user.VisitedLocations.Any() ? user.GetLastVisitedLocation() : TrackUserLocation(user);
+        return user.VisitedLocations.Any() ? user.GetLastVisitedLocation() : await TrackUserLocation(user);
     }
 
     public User GetUser(string userName)
@@ -86,18 +86,30 @@ public class TourGuideService : ITourGuideService
         return providers;
     }
 
-    public VisitedLocation TrackUserLocation(User user)
+    public async Task<VisitedLocation> TrackUserLocation(User user)
     {
-        VisitedLocation visitedLocation = _gpsUtil.GetUserLocation(user.UserId);
+        VisitedLocation visitedLocation = await _gpsUtil.GetUserLocation(user.UserId);
         user.AddToVisitedLocations(visitedLocation);
-        _rewardsService.CalculateRewards(user);
+        await _rewardsService.CalculateRewards(user);
         return visitedLocation;
     }
 
-    public List<Attraction> GetNearByAttractions(VisitedLocation visitedLocation, int take = 5)
+    public async Task TrackAllUserLocation(List<User> users)
     {
-        List<Attraction> Attractions = _gpsUtil.GetAttractions();
-        return Attractions
+        List<Task> tasks = new List<Task>();
+
+        foreach (var user in users)
+        {
+            tasks.Add(TrackUserLocation(user));
+        }
+
+        await Task.WhenAll(tasks);
+    }
+
+    public async Task<List<Attraction>> GetNearByAttractions(VisitedLocation visitedLocation, int take = 5)
+    {
+        List<Attraction> attractions = await _gpsUtil.GetAttractions();
+        return attractions
             .OrderBy(a => _rewardsService.GetDistance(a, visitedLocation.Location))
             .Take(take)
             .ToList(); 
