@@ -48,9 +48,9 @@ public class TourGuideController : ControllerBase
     }
 
     [HttpGet("getTripDeals")]
-    public ActionResult<List<Provider>> GetTripDeals([FromQuery] string userName)
+    public async Task<ActionResult<List<Provider>>> GetTripDeals([FromQuery] string userName)
     {
-        var deals = _tourGuideService.GetTripDeals(GetUser(userName));
+        var deals = await _tourGuideService.GetTripDeals(GetUser(userName));
         return Ok(deals);
     }
 

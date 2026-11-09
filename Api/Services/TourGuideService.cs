@@ -15,16 +15,16 @@ public class TourGuideService : ITourGuideService
     private readonly ILogger _logger;
     private readonly IGpsUtil _gpsUtil;
     private readonly IRewardsService _rewardsService;
-    private readonly TripPricer.TripPricer _tripPricer;
+    private readonly ITripPricer _tripPricer;
     public Tracker Tracker { get; private set; }
     private readonly Dictionary<string, User> _internalUserMap = new();
     private const string TripPricerApiKey = "test-server-api-key";
     private bool _testMode = true;
 
-    public TourGuideService(ILogger<TourGuideService> logger, IGpsUtil gpsUtil, IRewardsService rewardsService, ILoggerFactory loggerFactory)
+    public TourGuideService(ILogger<TourGuideService> logger, IGpsUtil gpsUtil, IRewardsService rewardsService, ITripPricer tripPricer, ILoggerFactory loggerFactory)
     {
         _logger = logger;
-        _tripPricer = new();
+        _tripPricer = tripPricer;
         _gpsUtil = gpsUtil;
         _rewardsService = rewardsService;
 
@@ -72,16 +72,17 @@ public class TourGuideService : ITourGuideService
         }
     }
 
-    public List<Provider> GetTripDeals(User user)
+    public async Task<List<Provider>> GetTripDeals(User user)
     {
         int cumulativeRewardPoints = user.GetAllUserRewards().Sum(i => i.RewardPoints);
-        List<Provider> providers = _tripPricer.GetPrice(
+        List<Provider> providers = await _tripPricer.GetPrice(
             TripPricerApiKey, 
             user.UserId,
             user.UserPreferences.NumberOfAdults, 
             user.UserPreferences.NumberOfChildren,
             user.UserPreferences.TripDuration, 
-            cumulativeRewardPoints);
+            cumulativeRewardPoints
+            );
         user.TripDeals = providers;
         return providers;
     }

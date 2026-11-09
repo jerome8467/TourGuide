@@ -100,11 +100,11 @@ namespace TourGuideTest
         }
 
         [Fact]
-        public void GetTripDeals()
+        public async Task GetTripDeals()
         {
-            _fixture.Initialize(0);
+            _fixture.Initialize();
             var user = new User(Guid.NewGuid(), "jon", "000", "jon@tourGuide.com");
-            List<Provider> providers = _fixture.TourGuideService.GetTripDeals(user);
+            List<Provider> providers = await _fixture.TourGuideService.GetTripDeals(user);
 
             _fixture.TourGuideService.Tracker.StopTracking();
 
