@@ -1,3 +1,4 @@
+using TourGuide.Dto.NearbyAttraction;
 using TourGuide.LibrairiesWrappers;
 using TourGuide.LibrairiesWrappers.Interfaces;
 using TourGuide.Services;
@@ -16,6 +17,7 @@ builder.Services.AddScoped<IRewardsService, RewardsService>();
 builder.Services.AddScoped<ITourGuideService, TourGuideService>();
 builder.Services.AddScoped<IGpsUtil, GpsUtilWrapper>();
 builder.Services.AddScoped<IRewardCentral, RewardCentralWrapper>();
+builder.Services.AddScoped<ICreateNearbyAttractionDto, CreateNearbyAttractionDto>();
 
 var app = builder.Build();
 
