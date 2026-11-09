@@ -4,6 +4,7 @@ namespace TourGuide.LibrairiesWrappers
 {
     public class RewardCentralWrapper : IRewardCentral
     {
+        private static readonly SemaphoreSlim rateLimiter = new(1000, 1000);
         private readonly RewardCentral.RewardCentral _rewardCentral;
 
         public RewardCentralWrapper()
@@ -13,7 +14,12 @@ namespace TourGuide.LibrairiesWrappers
 
         public async Task<int> GetAttractionRewardPoints(Guid attractionId, Guid userId)
         {
-            return await _rewardCentral.GetAttractionRewardPoints(attractionId, userId);
+            await rateLimiter.WaitAsync();
+            try
+            {
+                return await _rewardCentral.GetAttractionRewardPoints(attractionId, userId);
+            }
+            finally { rateLimiter.Release(); }
         }
     }
 }
