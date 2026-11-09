@@ -13,7 +13,6 @@ public class RewardsService : IRewardsService
     private readonly int _attractionProximityRange = 200;
     private readonly IGpsUtil _gpsUtil;
     private readonly IRewardCentral _rewardsCentral;
-    private static int count = 0;
 
     public RewardsService(IGpsUtil gpsUtil, IRewardCentral rewardCentral)
     {
@@ -34,19 +33,21 @@ public class RewardsService : IRewardsService
 
     public void CalculateRewards(User user)
     {
-        count++;
-        List<VisitedLocation> userLocations = user.VisitedLocations;
+        List<VisitedLocation> userLocations = user.GetAllVisitedLocations();
+        List<UserReward> userRewards = user.GetAllUserRewards();
         List<Attraction> attractions = _gpsUtil.GetAttractions();
 
         foreach (var visitedLocation in userLocations)
         {
             foreach (var attraction in attractions)
             {
-                if (!user.UserRewards.Any(r => r.Attraction.AttractionName == attraction.AttractionName))
+                if (!userRewards.Any(r => r.Attraction.AttractionName == attraction.AttractionName))
                 {
                     if (NearAttraction(visitedLocation, attraction))
                     {
-                        user.AddUserReward(new UserReward(visitedLocation, attraction, GetRewardPoints(attraction, user)));
+                        UserReward userReward = new UserReward(visitedLocation, attraction, GetRewardPoints(attraction, user));
+                        userRewards.Add(userReward);
+                        user.AddUserReward(userReward);
                     }
                 }
             }

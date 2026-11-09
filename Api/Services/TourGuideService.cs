@@ -46,7 +46,7 @@ public class TourGuideService : ITourGuideService
 
     public List<UserReward> GetUserRewards(User user)
     {
-        return user.UserRewards;
+        return user.GetAllUserRewards();
     }
 
     public VisitedLocation GetUserLocation(User user)
@@ -74,10 +74,14 @@ public class TourGuideService : ITourGuideService
 
     public List<Provider> GetTripDeals(User user)
     {
-        int cumulativeRewardPoints = user.UserRewards.Sum(i => i.RewardPoints);
-        List<Provider> providers = _tripPricer.GetPrice(TripPricerApiKey, user.UserId,
-            user.UserPreferences.NumberOfAdults, user.UserPreferences.NumberOfChildren,
-            user.UserPreferences.TripDuration, cumulativeRewardPoints);
+        int cumulativeRewardPoints = user.GetAllUserRewards().Sum(i => i.RewardPoints);
+        List<Provider> providers = _tripPricer.GetPrice(
+            TripPricerApiKey, 
+            user.UserId,
+            user.UserPreferences.NumberOfAdults, 
+            user.UserPreferences.NumberOfChildren,
+            user.UserPreferences.TripDuration, 
+            cumulativeRewardPoints);
         user.TripDeals = providers;
         return providers;
     }

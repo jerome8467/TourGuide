@@ -14,6 +14,8 @@ public class User
     public List<UserReward> UserRewards { get; } = new List<UserReward>();
     public UserPreferences UserPreferences { get; set; } = new UserPreferences();
     public List<Provider> TripDeals { get; set; } = new List<Provider>();
+    private readonly object _lock = new object();
+
 
     public User(Guid userId, string userName, string phoneNumber, string emailAddress)
     {
@@ -25,24 +27,52 @@ public class User
 
     public void AddToVisitedLocations(VisitedLocation visitedLocation)
     {
-        VisitedLocations.Add(visitedLocation);
+        lock (_lock)
+        {
+            VisitedLocations.Add(visitedLocation);
+        }
     }
 
     public void ClearVisitedLocations()
     {
-        VisitedLocations.Clear();
+        lock (_lock)
+        {
+            VisitedLocations.Clear();
+        }
     }
 
     public void AddUserReward(UserReward userReward)
     {
-        if (!UserRewards.Exists(r => r.Attraction.AttractionName == userReward.Attraction.AttractionName))
+        lock (_lock)
         {
-            UserRewards.Add(userReward);
+            if (!UserRewards.Exists(r => r.Attraction.AttractionName == userReward.Attraction.AttractionName))
+            {
+                UserRewards.Add(userReward);
+            }
         }
     }
 
     public VisitedLocation GetLastVisitedLocation()
     {
-        return VisitedLocations[^1];
+        lock (_lock)
+        {
+            return VisitedLocations[^1];
+        }
+    }
+
+    public List<VisitedLocation> GetAllVisitedLocations()
+    {
+        lock (_lock)
+        {
+            return VisitedLocations.ToList();
+        }
+    }
+
+    public List<UserReward> GetAllUserRewards()
+    {
+        lock (_lock)
+        {
+            return UserRewards.ToList();
+        }
     }
 }
