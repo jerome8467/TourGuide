@@ -54,7 +54,8 @@ public class RewardsService : IRewardsService
         }
     }
 
-    public async Task CalculateAllUserRewards(List<User> users)
+    // SOLUTION B
+    /*public async Task CalculateAllUserRewards(List<User> users)
     {
         List<Task> tasks = new List<Task>();
 
@@ -64,7 +65,7 @@ public class RewardsService : IRewardsService
         }
 
         await Task.WhenAll(tasks);
-    }
+    }*/
 
     public bool IsWithinAttractionProximity(Attraction attraction, Locations location)
     {

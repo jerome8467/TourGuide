@@ -17,6 +17,8 @@ public class Tracker
         _tourGuideService = tourGuideService;
         _logger = logger;
         Task.Run(() => Run(), _cancellationTokenSource.Token);
+        
+
     }
 
     // Assures to shut down the Tracker thread
@@ -25,9 +27,15 @@ public class Tracker
         _cancellationTokenSource.Cancel();
     }
 
+
     public async Task Run()
     {
         var stopwatch = new Stopwatch();
+        ParallelOptions parallelOptions = new ParallelOptions
+        {
+            MaxDegreeOfParallelism = 1000,
+            CancellationToken = _cancellationTokenSource.Token
+        };
 
         while (!_cancellationTokenSource.Token.IsCancellationRequested)
         {
@@ -36,7 +44,22 @@ public class Tracker
 
             stopwatch.Start();
 
-            await _tourGuideService.TrackAllUserLocation(users);
+            //SOLUTION B
+            //await _tourGuideService.TrackAllUserLocation(users);
+            try
+            {
+                await Parallel.ForEachAsync(users, parallelOptions, async (User user, CancellationToken token) =>
+                {
+                    await _tourGuideService.TrackUserLocation(user);
+                });
+                _logger.LogDebug("User location tracking complete");
+            }
+            catch(OperationCanceledException)
+            {
+                _logger.LogDebug("Tracking interrupted");
+                break;
+            }
+            
 
             stopwatch.Stop();
 

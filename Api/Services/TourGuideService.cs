@@ -95,7 +95,8 @@ public class TourGuideService : ITourGuideService
         return visitedLocation;
     }
 
-    public async Task TrackAllUserLocation(List<User> users)
+    // SOLUTION B
+    /*public async Task TrackAllUserLocation(List<User> users)
     {
         List<Task> tasks = new List<Task>();
 
@@ -105,7 +106,7 @@ public class TourGuideService : ITourGuideService
         }
 
         await Task.WhenAll(tasks);
-    }
+    }*/
 
     public async Task<List<Attraction>> GetNearByAttractions(VisitedLocation visitedLocation, int take = 5)
     {

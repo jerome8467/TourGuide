@@ -15,7 +15,8 @@ namespace TourGuide.Services.Interfaces
         Task<List<Provider>> GetTripDeals(User user);
         User GetUser(string userName);
         Task<VisitedLocation> GetUserLocation(User user);
-        Task TrackAllUserLocation(List<User> users);
+        // SOLUTION B
+        /*Task TrackAllUserLocation(List<User> users);*/
         List<UserReward> GetUserRewards(User user);
         Task<VisitedLocation> TrackUserLocation(User user);
     }
