@@ -1,0 +1,45 @@
+name: CI TourGuide
+
+###########################
+
+on:
+  push:
+    branches: [ "DevelopFixed" ]       
+  pull_request:
+    branches: [ "DevelopFixed" ]       
+
+###########################
+
+jobs:
+  build-test-publish:                  
+    runs-on: ubuntu-latest             
+
+    steps:                             
+
+      - name: Récupérer le code
+        uses: actions/checkout@v4      
+
+      - name: Installer .NET 7
+        uses: actions/setup-dotnet@v4  
+        with:
+          dotnet-version: 7.0.x 
+          
+###########################
+
+      - name: Restaurer les dépendances
+        run: dotnet restore TourGuide.sln
+
+      - name: Compiler
+        run: dotnet build TourGuide.sln --configuration Release --no-restore
+
+      - name: Lancer les tests
+        run: dotnet test TourGuide.sln --configuration Release --no-build
+
+      - name: Construire les DLL
+        run: dotnet publish Api/TourGuide.csproj --configuration Release --no-build --output publish
+
+      - name: Mettre les DLL à disposition (archive Zip)
+        uses: actions/upload-artifact@v4
+        with:
+          name: TourGuide-dll          
+          path: publish                
