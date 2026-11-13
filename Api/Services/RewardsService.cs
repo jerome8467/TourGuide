@@ -36,29 +36,7 @@ public class RewardsService : IRewardsService
         _proximityBuffer = _defaultProximityBuffer;
     }
 
-    /*public async Task CalculateRewards(User user)
-    {
-        List<VisitedLocation> userLocations = user.GetAllVisitedLocations();
-        List<UserReward> userRewards = user.GetAllUserRewards();
-        List<Attraction> attractions = await _gpsUtil.GetAttractions();
-
-        foreach (var visitedLocation in userLocations)
-        {
-            foreach (var attraction in attractions)
-            {
-                if (!userRewards.Any(r => r.Attraction.AttractionName == attraction.AttractionName))
-                {
-                    if (NearAttraction(visitedLocation, attraction))
-                    {
-                        UserReward userReward = new UserReward(visitedLocation, attraction, await GetRewardPoints(attraction, user));
-                        userRewards.Add(userReward);
-                        user.AddUserReward(userReward);
-                    }
-                }
-            }
-        }
-    }*/
-
+    // SOLUTION A
     public async Task CalculateRewards(User user)
     {
         List<VisitedLocation> userLocations = user.GetAllVisitedLocations();
@@ -88,7 +66,30 @@ public class RewardsService : IRewardsService
     }
 
     // SOLUTION B
-    /*public async Task CalculateAllUserRewards(List<User> users)
+    /*public async Task CalculateRewards(User user)
+    {
+        List<VisitedLocation> userLocations = user.GetAllVisitedLocations();
+        List<UserReward> userRewards = user.GetAllUserRewards();
+        List<Attraction> attractions = await _gpsUtil.GetAttractions();
+
+        foreach (var visitedLocation in userLocations)
+        {
+            foreach (var attraction in attractions)
+            {
+                if (!userRewards.Any(r => r.Attraction.AttractionName == attraction.AttractionName))
+                {
+                    if (NearAttraction(visitedLocation, attraction))
+                    {
+                        UserReward userReward = new UserReward(visitedLocation, attraction, await GetRewardPoints(attraction, user));
+                        userRewards.Add(userReward);
+                        user.AddUserReward(userReward);
+                    }
+                }
+            }
+        }
+    }
+
+    public async Task CalculateAllUserRewards(List<User> users)
     {
         List<Task> tasks = new List<Task>();
 

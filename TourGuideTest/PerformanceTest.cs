@@ -31,22 +31,10 @@ namespace TourGuideTest
             MaxDegreeOfParallelism = 1000,
         };
 
-
-        // RÉSULTATS HighVolumeTrackLocation (secondes)
-        // Sémaphore d'origine (1000)
-        // MODIF = Async + Task.WhenAll 
-
-        // Utilisateurs | Avant optimisation | Modif
-        // 100          | -                  | 0,12
-        // 1 000        | 87,23              | 0,40
-        // 10 000       | -                  | 3,80
-        // 100 000      | -                  | 32,07
-
-        // Seuil exigé pour 100 000 utilisateurs : 15 min (900 s)
         [Fact]
         public async Task HighVolumeTrackLocation()
         {
-            _fixture.Initialize(100);
+            _fixture.Initialize(100000);
 
             List<User> allUsers = _fixture.TourGuideService.GetAllUsers();
 
@@ -69,22 +57,10 @@ namespace TourGuideTest
             Assert.True(TimeSpan.FromMinutes(15).TotalSeconds >= stopWatch.Elapsed.TotalSeconds);
         }
 
-
-        // RÉSULTATS HighVolumeGetRewards (secondes)
-        // MODIF = Async + Task.WhenAll  
-
-        // Utilisateurs | Avant optimisation | Modif sans sémaphore | Modif + sémaphore (1000)
-        // 10           | 4,36               | 0,96                 | 0,94
-        // 100          | -                  | 1,03                 | 1,05
-        // 1 000        | -                  | 1,10                 | 1,30
-        // 10 000       | -                  | 2,16                 | 10,71
-        // 100 000      | -                  | 11,58                | 104,54
-
-        // Seuil exigé pour 100 000 utilisateurs : 20 min (1 200 s)
         [Fact]
         public async Task HighVolumeGetRewards()
         {
-            _fixture.Initialize(100);
+            _fixture.Initialize(100000);
 
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
