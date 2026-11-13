@@ -1,4 +1,5 @@
 ﻿using GpsUtil.Location;
+using System.Collections.Concurrent;
 using TourGuide.LibrairiesWrappers.Interfaces;
 using TourGuide.Services.Interfaces;
 using TourGuide.Users;
@@ -13,6 +14,10 @@ public class RewardsService : IRewardsService
     private readonly int _attractionProximityRange = 200;
     private readonly IGpsUtil _gpsUtil;
     private readonly IRewardCentral _rewardsCentral;
+    private readonly ParallelOptions _parallelOptions = new ParallelOptions
+    {
+        MaxDegreeOfParallelism = 1000,
+    };
 
     public RewardsService(IGpsUtil gpsUtil, IRewardCentral rewardCentral)
     {
@@ -31,7 +36,7 @@ public class RewardsService : IRewardsService
         _proximityBuffer = _defaultProximityBuffer;
     }
 
-    public async Task CalculateRewards(User user)
+    /*public async Task CalculateRewards(User user)
     {
         List<VisitedLocation> userLocations = user.GetAllVisitedLocations();
         List<UserReward> userRewards = user.GetAllUserRewards();
@@ -51,6 +56,34 @@ public class RewardsService : IRewardsService
                     }
                 }
             }
+        }
+    }*/
+
+    public async Task CalculateRewards(User user)
+    {
+        List<VisitedLocation> userLocations = user.GetAllVisitedLocations();
+        List<UserReward> userRewards = user.GetAllUserRewards();
+        List<Attraction> allAttractions = await _gpsUtil.GetAttractions();
+
+        List<Attraction> attractions = allAttractions
+        .Where(a => !userRewards.Any(r => r.Attraction.AttractionName == a.AttractionName))
+        .ToList();
+
+        ConcurrentBag<UserReward> rewards = new ConcurrentBag<UserReward>();
+
+        await Parallel.ForEachAsync(attractions, _parallelOptions, async (Attraction attraction, CancellationToken token) =>
+        {
+            VisitedLocation? nearLocation = userLocations.FirstOrDefault(v => NearAttraction(v, attraction));
+            if (nearLocation != null)
+            {
+                UserReward userReward = new UserReward(nearLocation, attraction, await GetRewardPoints(attraction, user));
+                rewards.Add(userReward);
+            }
+        });
+
+        foreach (var reward in rewards)
+        {
+            user.AddUserReward(reward);
         }
     }
 
