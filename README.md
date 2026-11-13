@@ -67,7 +67,3 @@ et à chaque pull request sur la branche `DevelopFixed`. Il :
 3. publie les DLL de l'API et les met à disposition en archive zip
    (artefact `TourGuide-dll`, dans l'onglet Actions).
 
-## Documentation
-
-La documentation technique (architecture, choix techniques, pipeline CI)
-est disponible dans : [à compléter]
