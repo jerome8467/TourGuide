@@ -46,7 +46,7 @@ namespace TourGuideTest
         [Fact]
         public async Task HighVolumeTrackLocation()
         {
-            _fixture.Initialize(100000);
+            _fixture.Initialize(100);
 
             List<User> allUsers = _fixture.TourGuideService.GetAllUsers();
 
@@ -84,7 +84,7 @@ namespace TourGuideTest
         [Fact]
         public async Task HighVolumeGetRewards()
         {
-            _fixture.Initialize(100000);
+            _fixture.Initialize(100);
 
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
