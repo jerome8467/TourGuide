@@ -18,7 +18,7 @@ builder.Services.AddScoped<ITourGuideService, TourGuideService>();
 builder.Services.AddScoped<IGpsUtil, GpsUtilWrapper>();
 builder.Services.AddScoped<IRewardCentral, RewardCentralWrapper>();
 builder.Services.AddScoped<ICreateNearbyAttractionDto, CreateNearbyAttractionDto>();
-builder.Services.AddScoped<ITripPricer, TripPriceWrapper>();
+builder.Services.AddScoped<ITripPricer, TripPricerWrapper>();
 
 var app = builder.Build();
 

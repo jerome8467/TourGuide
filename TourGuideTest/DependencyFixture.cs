@@ -35,7 +35,7 @@ namespace TourGuideTest
             InternalTestHelper.SetInternalUserNumber(internalUserNumber);
 
             RewardCentral = new RewardCentralWrapper();
-            TripPricer = new TripPriceWrapper();
+            TripPricer = new TripPricerWrapper();
             GpsUtil = new GpsUtilWrapper();
             RewardsService = new RewardsService(GpsUtil, RewardCentral);
             TourGuideService = new TourGuideService(tourGuideLogger, GpsUtil, RewardsService, TripPricer, loggerFactory);

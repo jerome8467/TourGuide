@@ -3,11 +3,11 @@ using TripPricer;
 
 namespace TourGuide.LibrairiesWrappers
 {
-    public class TripPriceWrapper : ITripPricer
+    public class TripPricerWrapper : ITripPricer
     {
         private readonly TripPricer.TripPricer _tripPricer;
 
-        public TripPriceWrapper()
+        public TripPricerWrapper()
         {
             _tripPricer = new();
         }
