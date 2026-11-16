@@ -54,7 +54,7 @@ public class RewardsService : IRewardsService
             VisitedLocation? nearLocation = userLocations.FirstOrDefault(v => NearAttraction(v, attraction));
             if (nearLocation != null)
             {
-                UserReward userReward = new UserReward(nearLocation, attraction, await GetRewardPoints(attraction, user));
+                UserReward userReward = new UserReward(nearLocation, attraction, await GetRewardPoints(attraction, user.UserId));
                 rewards.Add(userReward);
             }
         });
@@ -80,7 +80,7 @@ public class RewardsService : IRewardsService
                 {
                     if (NearAttraction(visitedLocation, attraction))
                     {
-                        UserReward userReward = new UserReward(visitedLocation, attraction, await GetRewardPoints(attraction, user));
+                        UserReward userReward = new UserReward(visitedLocation, attraction, await GetRewardPoints(attraction, user.UserId));
                         userRewards.Add(userReward);
                         user.AddUserReward(userReward);
                     }
@@ -112,9 +112,9 @@ public class RewardsService : IRewardsService
         return GetDistance(attraction, visitedLocation.Location) <= _proximityBuffer;
     }
 
-    private async Task<int> GetRewardPoints(Attraction attraction, User user)
+    public async Task<int> GetRewardPoints(Attraction attraction, Guid userId)
     {
-        return await _rewardsCentral.GetAttractionRewardPoints(attraction.AttractionId, user.UserId);
+        return await _rewardsCentral.GetAttractionRewardPoints(attraction.AttractionId, userId);
     }
 
     public double GetDistance(Locations loc1, Locations loc2)

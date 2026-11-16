@@ -12,5 +12,6 @@ namespace TourGuide.Services.Interfaces
         bool IsWithinAttractionProximity(Attraction attraction, Locations location);
         void SetDefaultProximityBuffer();
         void SetProximityBuffer(int proximityBuffer);
+        Task<int> GetRewardPoints(Attraction attraction, Guid userId);
     }
 }

@@ -19,6 +19,7 @@ namespace TourGuideTest
         private readonly DependencyFixture _fixture;
 
         private readonly ITestOutputHelper _output;
+        private const int initializeNumber = 100000;
 
         public PerformanceTest(DependencyFixture fixture, ITestOutputHelper output)
         {
@@ -34,7 +35,7 @@ namespace TourGuideTest
         [Fact]
         public async Task HighVolumeTrackLocation()
         {
-            _fixture.Initialize(100000);
+            _fixture.Initialize(initializeNumber);
 
             List<User> allUsers = _fixture.TourGuideService.GetAllUsers();
 
@@ -60,7 +61,7 @@ namespace TourGuideTest
         [Fact]
         public async Task HighVolumeGetRewards()
         {
-            _fixture.Initialize(100000);
+            _fixture.Initialize(initializeNumber);
 
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();

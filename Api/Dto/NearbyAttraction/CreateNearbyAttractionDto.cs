@@ -1,5 +1,4 @@
 ﻿using GpsUtil.Location;
-using TourGuide.LibrairiesWrappers.Interfaces;
 using TourGuide.Services.Interfaces;
 
 namespace TourGuide.Dto.NearbyAttraction
@@ -7,12 +6,10 @@ namespace TourGuide.Dto.NearbyAttraction
     public class CreateNearbyAttractionDto : ICreateNearbyAttractionDto
     {
         private readonly IRewardsService _rewardsService;
-        private readonly IRewardCentral _rewardCentral;
 
-        public CreateNearbyAttractionDto(IRewardsService rewardsService, IRewardCentral rewardCentral)
+        public CreateNearbyAttractionDto(IRewardsService rewardsService)
         {
             _rewardsService = rewardsService;
-            _rewardCentral = rewardCentral;
         }
 
         public async Task<NearbyAttractionDto> Generate(Attraction attraction, VisitedLocation lastVisitedLocation)
@@ -26,7 +23,7 @@ namespace TourGuide.Dto.NearbyAttraction
                 LatitudeUser = lastVisitedLocation.Location.Latitude,
                 LongitudeUser = lastVisitedLocation.Location.Longitude,
                 MilesDistance = _rewardsService.GetDistance(attraction, lastVisitedLocation.Location),
-                RewardsPoints = await _rewardCentral.GetAttractionRewardPoints(attraction.AttractionId, lastVisitedLocation.UserId)
+                RewardsPoints = await _rewardsService.GetRewardPoints(attraction, lastVisitedLocation.UserId)
             };
         }
 
