@@ -41,7 +41,22 @@ public class User
         }
     }
 
-    public void AddUserReward(UserReward userReward)
+    // SOLUTION A
+    public void AddUserRewards(IEnumerable<UserReward> userRewards)
+    {
+        lock (_lock)
+        {
+            foreach(var userReward in userRewards)
+            {
+                if (!UserRewards.Exists(r => r.Attraction.AttractionName == userReward.Attraction.AttractionName))
+                {
+                    UserRewards.Add(userReward);
+                }
+            }
+        }
+    }
+    // SOLUTION B
+    /*public void AddUserReward(UserReward userReward)
     {
         lock (_lock)
         {
@@ -50,7 +65,7 @@ public class User
                 UserRewards.Add(userReward);
             }
         }
-    }
+    }*/
 
     public VisitedLocation GetLastVisitedLocation()
     {

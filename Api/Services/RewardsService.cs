@@ -59,10 +59,7 @@ public class RewardsService : IRewardsService
             }
         });
 
-        foreach (var reward in rewards)
-        {
-            user.AddUserReward(reward);
-        }
+        user.AddUserRewards(rewards);
     }
 
     // SOLUTION B
